@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f04b4b">
+  <meta name="description" content="Uma Pokédex moderna para explorar Pokémon. Pesquise por nome ou número e descubra seus tipos e atributos.">
+  <title>Pokédex — Explore o mundo Pokémon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="Pokédex início">
+      <span class="brand-ball" aria-hidden="true"><span></span></span>
+      <span>Poké<span class="brand-accent">dex</span></span>
+    </a>
+    <span class="topbar-label"><span class="status-dot"></span> Explore o mundo Pokémon</span>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span> SUA JORNADA COMEÇA AQUI</p>
+        <h1>Encontre seu<br><span>próximo Pokémon.</span></h1>
+        <p class="hero-description">Descubra habilidades, tipos e detalhes dos seus Pokémon favoritos em um só lugar.</p>
+        <form class="search" id="search-form" role="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.2 4.2"></path></svg>
+          <input id="search-input" type="search" placeholder="Busque por nome ou número..." autocomplete="off" aria-label="Nome ou número do Pokémon">
+          <button type="submit">Buscar <span aria-hidden="true">↗</span></button>
+        </form>
+        <div class="quick-search"><span>Experimente:</span><button type="button" data-search="pikachu">Pikachu</button><button type="button" data-search="charizard">Charizard</button><button type="button" data-search="025">#025</button></div>
+      </div>
+      <div class="hero-art" aria-label="Ilustração de Pokébola">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="hero-glow"></div>
+        <div class="hero-pokeball"><div class="ball-top"></div><div class="ball-bottom"></div><div class="ball-band"></div><div class="ball-button"><span></span></div></div>
+        <span class="spark spark-a">✦</span><span class="spark spark-b">✧</span><span class="spark spark-c">✦</span>
+        <div class="art-caption"><span class="caption-mark">✦</span><span><strong>Gotta catch 'em all!</strong><small>Seu universo Pokémon</small></span></div>
+      </div>
+    </section>
+
+    <section class="results-section" aria-labelledby="results-title">
+      <div class="section-heading">
+        <div><p class="section-kicker">CATÁLOGO</p><h2 id="results-title">Pokémon em destaque <span class="heading-dot">.</span></h2></div>
+        <button class="random-button" id="random-button" type="button"><span aria-hidden="true">⤨</span> Pokémon aleatório</button>
+      </div>
+      <div class="filter-row" aria-label="Filtrar por tipo">
+        <button class="filter-chip active" data-type="all" type="button">Todos</button>
+        <button class="filter-chip" data-type="fire" type="button"><i class="type-dot fire"></i> Fogo</button>
+        <button class="filter-chip" data-type="water" type="button"><i class="type-dot water"></i> Água</button>
+        <button class="filter-chip" data-type="grass" type="button"><i class="type-dot grass"></i> Planta</button>
+        <button class="filter-chip" data-type="electric" type="button"><i class="type-dot electric"></i> Elétrico</button>
+        <button class="filter-chip" data-type="psychic" type="button"><i class="type-dot psychic"></i> Psíquico</button>
+        <button class="filter-chip" data-type="rock" type="button"><i class="type-dot rock"></i> Pedra</button>
+      </div>
+      <div class="notice" id="notice" role="status" aria-live="polite">Carregando Pokémon...</div>
+      <div class="pokemon-grid" id="pokemon-grid"></div>
+      <div class="load-row"><button class="load-more" id="load-more" type="button">Carregar mais <span aria-hidden="true">↓</span></button></div>
+    </section>
+    <footer class="footer"><a class="brand footer-brand" href="./"><span class="brand-ball"><span></span></span><span>Poké<span class="brand-accent">dex</span></span></a><p>Feito para treinadores curiosos. Dados fornecidos pela PokéAPI.</p><span class="footer-version">V. 1.0</span></footer>
+  </main>
+
+  <dialog id="pokemon-dialog" class="pokemon-dialog">
+    <button class="dialog-close" id="dialog-close" type="button" aria-label="Fechar detalhes">×</button>
+    <div id="dialog-content"></div>
+  </dialog>
+</body>
+</html>
