@@ -39,6 +39,18 @@ function imageUrl(pokemon) {
     pokemon.sprites.other?.dream_world?.front_default || pokemon.sprites.front_default || "";
 }
 function setNotice(message) { notice.textContent = message; }
+
+// Fala o nome do Pokémon usando a voz disponível em português brasileiro.
+function speakPokemonName(pokemon) {
+  if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) return;
+  window.speechSynthesis.cancel();
+  const name = pokemon.name.replace(/-/g, " ");
+  const utterance = new SpeechSynthesisUtterance(`Encontrei ${name}!`);
+  utterance.lang = "pt-BR";
+  utterance.rate = 0.9;
+  utterance.pitch = 1.05;
+  window.speechSynthesis.speak(utterance);
+}
 function setTheme(card, type) {
   const colors = typeColors[type] || typeColors.normal;
   card.style.setProperty("--type-color", colors[0]);
@@ -114,12 +126,20 @@ async function searchPokemon(query) {
   searchMode = true;
   loadMoreButton.hidden = true;
   setNotice("Procurando Pokémon...");
+  grid.classList.add("pokemon-searching");
+  grid.classList.remove("pokemon-found");
   grid.replaceChildren();
   try {
     const pokemon = await fetchPokemon(value);
+    grid.classList.remove("pokemon-searching");
     renderPokemon([pokemon]);
+    grid.classList.remove("pokemon-found");
+    void grid.offsetWidth;
+    grid.classList.add("pokemon-found");
     setNotice(`Encontramos ${pokemon.name}, o Pokémon #${String(pokemon.id).padStart(3,"0")}.`);
+    speakPokemonName(pokemon);
   } catch {
+    grid.classList.remove("pokemon-searching");
     setNotice("Pokémon não encontrado. Tente outro nome ou número (de 1 a 1025).");
   }
 }
@@ -172,7 +192,11 @@ randomButton.addEventListener("click", async () => {
   try {
     const pokemon = await fetchPokemon(id);
     renderPokemon([pokemon]);
+    grid.classList.remove("pokemon-found");
+    void grid.offsetWidth;
+    grid.classList.add("pokemon-found");
     setNotice("Pokémon aleatório encontrado! Clique no card para ver mais detalhes.");
+    speakPokemonName(pokemon);
     showDetails(pokemon);
   } catch { setNotice("Não foi possível sortear agora. Tente novamente."); }
 });
