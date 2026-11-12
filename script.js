@@ -11,7 +11,7 @@ const dialogClose = document.querySelector("#dialog-close");
 const reveal = document.querySelector("#pokemon-reveal");
 const revealImage = document.querySelector("#reveal-silhouette");
 const revealAnswer = document.querySelector("#reveal-answer");
-let revealTimer;
+let revealTimer, revealTimer2;
 
 const typeLabels = {
   normal: "Normal", fire: "Fogo", water: "Água", electric: "Elétrico", grass: "Planta",
@@ -124,6 +124,8 @@ async function searchPokemon(query) {
     await playPokemonReveal(pokemon);
     renderPokemon([pokemon]);
     setNotice(`Encontramos ${pokemon.name}, o Pokémon #${String(pokemon.id).padStart(3,"0")}.`);
+    // Abre a janela central com o Pokémon; ela só fecha no botão X (ou ESC / clique fora).
+    showDetails(pokemon);
   } catch {
     setNotice("Pokémon não encontrado. Tente outro nome ou número (de 1 a 1025).");
   }
@@ -131,6 +133,7 @@ async function searchPokemon(query) {
 function playPokemonReveal(pokemon) {
   return new Promise(resolve => {
     clearTimeout(revealTimer);
+    clearTimeout(revealTimer2);
     reveal.classList.remove("is-revealing");
     reveal.classList.add("is-active");
     revealImage.src = imageUrl(pokemon);
@@ -143,7 +146,7 @@ function playPokemonReveal(pokemon) {
       reveal.classList.add("is-revealing");
       revealAnswer.textContent = pokemon.name.toUpperCase() + "!";
     }, 1550);
-    revealTimer = setTimeout(() => {
+    revealTimer2 = setTimeout(() => {
       reveal.classList.remove("is-active", "is-revealing");
       reveal.setAttribute("aria-hidden", "true");
       resolve();
