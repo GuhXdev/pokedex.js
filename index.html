@@ -66,6 +66,18 @@
     <footer class="footer"><a class="brand footer-brand" href="./"><span class="brand-ball"><span></span></span><span>Poké<span class="brand-accent">dex</span></span></a><p>Feito para treinadores curiosos. Dados fornecidos pela PokéAPI.</p><span class="footer-version">V. 1.0</span></footer>
   </main>
 
+  <div class="pokemon-reveal" id="pokemon-reveal" aria-hidden="true">
+    <div class="reveal-stars" aria-hidden="true">✦ <span>✧</span> ✦</div>
+    <p class="reveal-kicker">UM NOVO DESAFIO!</p>
+    <h2 class="reveal-title">QUEM É ESSE<br>POKÉMON?</h2>
+    <div class="reveal-stage">
+      <div class="reveal-ring"></div>
+      <img class="reveal-silhouette" id="reveal-silhouette" alt="">
+      <div class="reveal-flash"></div>
+    </div>
+    <p class="reveal-answer" id="reveal-answer">É...</p>
+  </div>
+
   <dialog id="pokemon-dialog" class="pokemon-dialog">
     <button class="dialog-close" id="dialog-close" type="button" aria-label="Fechar detalhes">×</button>
     <div id="dialog-content"></div>

@@ -8,6 +8,10 @@ const randomButton = document.querySelector("#random-button");
 const dialog = document.querySelector("#pokemon-dialog");
 const dialogContent = document.querySelector("#dialog-content");
 const dialogClose = document.querySelector("#dialog-close");
+const reveal = document.querySelector("#pokemon-reveal");
+const revealImage = document.querySelector("#reveal-silhouette");
+const revealAnswer = document.querySelector("#reveal-answer");
+let revealTimer;
 
 const typeLabels = {
   normal: "Normal", fire: "Fogo", water: "Água", electric: "Elétrico", grass: "Planta",
@@ -39,18 +43,6 @@ function imageUrl(pokemon) {
     pokemon.sprites.other?.dream_world?.front_default || pokemon.sprites.front_default || "";
 }
 function setNotice(message) { notice.textContent = message; }
-
-// Fala o nome do Pokémon usando a voz disponível em português brasileiro.
-function speakPokemonName(pokemon) {
-  if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) return;
-  window.speechSynthesis.cancel();
-  const name = pokemon.name.replace(/-/g, " ");
-  const utterance = new SpeechSynthesisUtterance(`Encontrei ${name}!`);
-  utterance.lang = "pt-BR";
-  utterance.rate = 0.9;
-  utterance.pitch = 1.05;
-  window.speechSynthesis.speak(utterance);
-}
 function setTheme(card, type) {
   const colors = typeColors[type] || typeColors.normal;
   card.style.setProperty("--type-color", colors[0]);
@@ -126,22 +118,37 @@ async function searchPokemon(query) {
   searchMode = true;
   loadMoreButton.hidden = true;
   setNotice("Procurando Pokémon...");
-  grid.classList.add("pokemon-searching");
-  grid.classList.remove("pokemon-found");
   grid.replaceChildren();
   try {
     const pokemon = await fetchPokemon(value);
-    grid.classList.remove("pokemon-searching");
+    await playPokemonReveal(pokemon);
     renderPokemon([pokemon]);
-    grid.classList.remove("pokemon-found");
-    void grid.offsetWidth;
-    grid.classList.add("pokemon-found");
     setNotice(`Encontramos ${pokemon.name}, o Pokémon #${String(pokemon.id).padStart(3,"0")}.`);
-    speakPokemonName(pokemon);
   } catch {
-    grid.classList.remove("pokemon-searching");
     setNotice("Pokémon não encontrado. Tente outro nome ou número (de 1 a 1025).");
   }
+}
+function playPokemonReveal(pokemon) {
+  return new Promise(resolve => {
+    clearTimeout(revealTimer);
+    reveal.classList.remove("is-revealing");
+    reveal.classList.add("is-active");
+    revealImage.src = imageUrl(pokemon);
+    revealImage.alt = `Silhueta de ${pokemon.name}`;
+    revealAnswer.textContent = "É...";
+    reveal.setAttribute("aria-hidden", "false");
+
+    // Suspense com silhueta, seguido pela revelação do Pokémon.
+    revealTimer = setTimeout(() => {
+      reveal.classList.add("is-revealing");
+      revealAnswer.textContent = pokemon.name.toUpperCase() + "!";
+    }, 1550);
+    revealTimer = setTimeout(() => {
+      reveal.classList.remove("is-active", "is-revealing");
+      reveal.setAttribute("aria-hidden", "true");
+      resolve();
+    }, 2450);
+  });
 }
 function updateFilterButtons() {
   document.querySelectorAll(".filter-chip").forEach(btn => btn.classList.toggle("active", btn.dataset.type === currentFilter));
@@ -192,11 +199,7 @@ randomButton.addEventListener("click", async () => {
   try {
     const pokemon = await fetchPokemon(id);
     renderPokemon([pokemon]);
-    grid.classList.remove("pokemon-found");
-    void grid.offsetWidth;
-    grid.classList.add("pokemon-found");
     setNotice("Pokémon aleatório encontrado! Clique no card para ver mais detalhes.");
-    speakPokemonName(pokemon);
     showDetails(pokemon);
   } catch { setNotice("Não foi possível sortear agora. Tente novamente."); }
 });
